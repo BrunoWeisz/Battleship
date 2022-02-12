@@ -23,15 +23,51 @@ class BattleshipGame {
     constructor(){
         this.playerOne = new BattleshipPlayer(1,this);
         this.playerTwo = new BattleshipPlayer(2,this);
+        this.turn = this.playerOne;
     }
 
     //----------Interface------------//
 
     isPuttingPhase(){
-        return true;
+        return this.playerOne.isPutting() || this.playerTwo.isPutting();
     }
+
+    isAttackingPhase(){
+        return !(this.isPuttingPhase());
+    }
+
     isEmpty(){
         return this.playerOne.getShips().length + this.playerTwo.getShips().length == 0;
+    }
+
+    playerOneAttacks(aPosition){
+        if (this.isPuttingPhase()){
+            throw new Error('Is putting phase');
+        }
+        if (this.turn !== this.playerOne){
+            throw new Error('Wrong turn');
+        }
+        this.playerTwo.toBeAttackedAt(aPosition);
+        this.turn = this.playerTwo;
+    }
+
+    playerTwoAttacks(aPosition){
+        if (this.isPuttingPhase()){
+            throw new Error('Is putting phase');
+        }
+        if (this.turn !== this.playerTwo){
+            throw new Error('Wrong turn');
+        }
+        this.playerOne.toBeAttackedAt(aPosition);
+        this.turn = this.playerOne;
+    }
+
+    playerTwoAttackedAt(aPosition){
+        return this.playerTwo.hasBeenAttackedAt(aPosition);
+    }
+
+    playerOneAttackedAt(aPosition){
+        return this.playerOne.hasBeenAttackedAt(aPosition);
     }
 
     playerTwoPutsShip(length, position, orientation){
@@ -50,7 +86,30 @@ class BattleshipGame {
         return this.playerTwo.hasShipInPosition(position);
     }
 
+    playerOneFinishesPutting(){
+        this.playerOne.finishPutting();
+    }
+
+    playerTwoFinishesPutting(){
+        this.playerTwo.finishPutting();
+    }
+
+    isPlayerOnePuttingShips(){
+        return this.playerOne.isPutting();
+    }
+
+    isPlayerTwoPuttingShips(){
+        return this.playerTwo.isPutting();
+    }
+
     //---private methods---//
+
+    playerPutsShip(aPlayer, length, position, orientation){
+        let aNewShip = new Ship(length, position, orientation);
+        this.checkPlayerShipSuperposition(aPlayer,aNewShip);
+        this.checkPlayerShipLimit(aPlayer, length);
+        aPlayer.putNewShip(aNewShip);
+    }
 
     checkPlayerShipLimit(aPlayer, length){
         if (this.playerShipLimitExceededForSize(aPlayer,length,5-length)){
@@ -71,13 +130,6 @@ class BattleshipGame {
         return (aPlayer.getShips().filter(aShip => {
             return aShip.size() == shipLength;
         }).length) == maxAllowedAmount     
-    }
-
-    playerPutsShip(aPlayer, length, position, orientation){
-        let aNewShip = new Ship(length, position, orientation);
-        this.checkPlayerShipSuperposition(aPlayer,aNewShip);
-        this.checkPlayerShipLimit(aPlayer, length);
-        aPlayer.putNewShip(aNewShip);
     }
 
     playerHasShipInPosition(aPlayer, position){

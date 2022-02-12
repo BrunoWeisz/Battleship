@@ -232,3 +232,4 @@ test("Player one ships cannot touch", () => {
     expect(game.playerOneHasBoatIn(position2)).toBeFalsy();
 })
 
+//-----------------------------------------------------//
