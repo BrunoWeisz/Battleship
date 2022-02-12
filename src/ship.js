@@ -1,32 +1,78 @@
+import _ from 'lodash';
+
 class Ship{
-    constructor(length, position, orientation){
+    constructor(length, position, orientation = "vertical"){
         
         this.typeCheckLength(length);
         this.typeCheckPosition(position);
         
         this.squares = [];
+        this.length = length;
+        this.orientation = orientation;
 
-
-        if (orientation == 'vertical'){
-            if (length == 1){
-                this.squares.push(position);
-            } else if (length == 2){
-                this.squares.push(position);
-                this.squares.push([position[0]+1, position[1]]);
+        if (orientation === 'vertical'){
+            for (let i = 0; i < this.length; i++){
+                this.squares.push([position[0]+i, position[1]]);
             }
-        } else if (orientation == 'horizontal'){
-            if (length == 1){
-                this.squares.push(position);
-            } else if (length == 2){
-                this.squares.push(position);
-                this.squares.push([position[0], position[1]]+1);
+        } else if (orientation === 'horizontal'){
+            for (let i = 0; i < this.length; i++){
+                this.squares.push([position[0], position[1]+i]);
             }
+        } else {
+            throw new Error("Orientation must be valid");
         }
+
+        this.checkBounds();
+    }
+
+    //--------Bound Check------------------------------------//
+    checkBounds(){
+        this.squares.forEach(square => {
+            if(!(square[0] >= 0 && square[0] < 10 && 
+                square[1] >= 0 && square[1] < 10)){
+               throw new Error('Ship position must be between bounds');
+            }
+        })
+    }
+    //----------------Superposition checks-------------------//
+    superposesWith(anotherShip){
+        return anotherShip.getSquares().some(aSquare => {
+            return this.hasPosition(aSquare); 
+        })
+    }
+
+    touchesWith(anotherShip){
+        return anotherShip.getSquares().some(aSquare => {
+            return this.getSquares().some(anotherSquare => {
+                return this.squaresAreAdyacent(aSquare, anotherSquare);
+            }) 
+        })
+    }
+
+    squaresAreAdyacent(aSquare, anotherSquare){
+        return (Math.abs(aSquare[0] - anotherSquare[0]) <= 1) &&
+               (Math.abs(aSquare[1] - anotherSquare[1]) <= 1);
+    }
+
+    hasPosition(aSquare){
+        return this.getSquares().some(anotherSquare => {
+            return (aSquare[0] == anotherSquare[0] &&
+                    aSquare[1] == anotherSquare[1]);
+        }) 
+    }
+
+    getSquares(){
+        return this.squares;
+    }
+
+    size(){
+        return this.length;
     }
 
     //--------Type Checks------------------------------------//
     typeCheckLength(length){
         if(!_.isInteger(length)) {throw new Error("Ship length must be integer")}
+        if(length > 4){throw new Error("Ship length must be 4 or less")}
     }
     typeCheckPosition(position){
         if(!(_.isArray(position) && position.length == 2)){

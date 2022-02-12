@@ -16,87 +16,87 @@ Gameboard{
 
 import _ from 'lodash';
 import Ship from './ship.js';
+import BattleshipPlayer from './player.js';
 
 class BattleshipGame {
 
     constructor(){
-        this.empty = true;
-        this.playerOneShipPositions = [];
+        this.playerOne = new BattleshipPlayer(1,this);
+        this.playerTwo = new BattleshipPlayer(2,this);
     }
+
+    //----------Interface------------//
 
     isPuttingPhase(){
         return true;
     }
     isEmpty(){
-        return this.empty;
+        return this.playerOne.getShips().length + this.playerTwo.getShips().length == 0;
     }
-    //--------Type Checks------------------------------------//
-    typeCheckLength(length){
-        if(!_.isInteger(length)) {throw new Error("Ship length must be integer")}
+
+    playerTwoPutsShip(length, position, orientation){
+        this.playerTwo.commandNewShip(length, position, orientation);
     }
-    typeCheckPosition(position){
-        if(!(_.isArray(position) && position.length == 2)){
-            throw new Error('Ship position must be a length 2 array');
-        }
-        if(!(_.isInteger(position[0]) && _.isInteger(position[1]))){
-            throw new Error('Ship position must be integer');
-        }
-        
-    }
-    //-------------------------------------------------------//
 
     playerOnePutsShip(length, position, orientation){
-        
-        this.typeCheckLength(length);
-        this.typeCheckPosition(position);
+        this.playerOne.commandNewShip(length, position, orientation);
+    }
 
-        if(!(position[0] >= 0 && position[0] < 10 && 
-            position[1] >= 0 && position[1] < 10)){
-           throw new Error('Ship position must be between bounds');
-        }
-        if (this.playerOneHasBoatIn(position)){
+    playerOneHasBoatIn(position){
+        return this.playerOne.hasShipInPosition(position);
+    }
+
+    playerTwoHasBoatIn(position){
+        return this.playerTwo.hasShipInPosition(position);
+    }
+
+    //---private methods---//
+
+    checkPlayerShipLimit(aPlayer, length){
+        if (this.playerShipLimitExceededForSize(aPlayer,length,5-length)){
+            throw new Error('Ship limit exceeded');
+        }   
+    }
+
+    checkPlayerShipSuperposition(aPlayer, aNewShip){
+        if (this.playerShipsSuperposeWith(aPlayer, aNewShip)){
             throw new Error('Position already occupied');
         }
-        
-        if (length == 1) {
-            this.playerOneShipPositions.push(position);
-            this.empty = false;
-            return
-        };
-        
-        if (length == 2) {
-            if (orientation == 'horizontal'){
-                if (length - 1 + position[1] >= 10){
-                    throw new Error('Ship position must be between bounds');
-                }
-                if (this.playerOneHasBoatIn([position[0], position[1]+1])){
-                    throw new Error('Position already occupied');
-                }
-                this.playerOneShipPositions.push(position);
-                this.playerOneShipPositions.push([position[0], position[1]+1]);
-                this.empty = false;
-
-            }else if (orientation == 'vertical'){    
-
-                if (length - 1 + position[0] >= 10){
-                    throw new Error('Ship position must be between bounds');
-                }
-                if (this.playerOneHasBoatIn([position[0]+1, position[1]])){
-                    throw new Error('Position already occupied');
-                }
-                this.playerOneShipPositions.push(position);
-                this.playerOneShipPositions.push([position[0]+1, position[1]]);
-                this.empty = false;
-            }
+        if (this.playerShipsTouchWith(aPlayer,aNewShip)){
+            throw new Error('Ships cannot touch');
         }
-        // let newShip = new Ship(length,position,orientation);
-        
     }
-    playerOneHasBoatIn(position){
-        return this.playerOneShipPositions.some(pos => {
-            return position[0] == pos[0] && position[1] == pos[1];
-        });
+
+    playerShipLimitExceededForSize(aPlayer, shipLength, maxAllowedAmount){
+        return (aPlayer.getShips().filter(aShip => {
+            return aShip.size() == shipLength;
+        }).length) == maxAllowedAmount     
     }
+
+    playerPutsShip(aPlayer, length, position, orientation){
+        let aNewShip = new Ship(length, position, orientation);
+        this.checkPlayerShipSuperposition(aPlayer,aNewShip);
+        this.checkPlayerShipLimit(aPlayer, length);
+        aPlayer.putNewShip(aNewShip);
+    }
+
+    playerHasShipInPosition(aPlayer, position){
+        return aPlayer.getShips().some(aShip => {
+            return aShip.hasPosition(position);
+        })
+    }
+
+    playerShipsSuperposeWith(aPlayer, aShip){
+        return aPlayer.getShips().some(anotherShip => {
+            return anotherShip.superposesWith(aShip);
+        })
+    }
+
+    playerShipsTouchWith(aPlayer, aShip){
+        return aPlayer.getShips().some(anotherShip => {
+            return anotherShip.touchesWith(aShip);
+        })  
+    }  
 }
 
 export default BattleshipGame;

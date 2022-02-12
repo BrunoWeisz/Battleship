@@ -149,3 +149,86 @@ test("Player 1 cannot put a boat of size 2 horizontally supraposing an existing 
     expect(game.playerOneHasBoatIn(position2)).toBeFalsy();
     expect(game.isEmpty()).toBeFalsy();
 })
+
+test("Orientation must be vertical or horizontal", () => {
+    let game = new BattleshipGame();
+    let size = 1;
+    let position = [5,5];
+    let orientation = 1;
+    
+    expect(()=>{game.playerOnePutsShip(size, position, orientation)}).toThrow(Error);
+    expect(()=>{game.playerOnePutsShip(size, position, orientation)}).toThrow("Orientation must be valid");
+    expect(game.playerOneHasBoatIn(position)).toBeFalsy();
+})
+
+test("Ships cannot exceed 4 length", () => {
+    let game = new BattleshipGame();
+    let size = 5;
+    let position = [0,0];
+    let orientation = 'vertical';
+    
+    expect(()=>{game.playerOnePutsShip(size, position, orientation)}).toThrow(Error);
+    expect(()=>{game.playerOnePutsShip(size, position, orientation)}).toThrow("Ship length must be 4 or less");
+    expect(game.playerOneHasBoatIn(position)).toBeFalsy();
+})
+
+test("Player one can have at most 4 length 1 ships", () => {
+    let game = new BattleshipGame();
+    let size = 1;
+    game.playerOnePutsShip(size, [0,0]);
+    game.playerOnePutsShip(size, [0,2]);
+    game.playerOnePutsShip(size, [0,4]);
+    game.playerOnePutsShip(size, [0,6]);
+    
+    expect(()=>{game.playerOnePutsShip(size, [0,8])}).toThrow(Error);
+    expect(()=>{game.playerOnePutsShip(size, [0,8])}).toThrow("Ship limit exceeded");
+    expect(game.playerOneHasBoatIn([0,8])).toBeFalsy();
+})
+
+test("Player one can have at most 3 length 2 ships", () => {
+    let game = new BattleshipGame();
+    let size = 2;
+    let orientation = 'vertical';
+    game.playerOnePutsShip(size, [0,0], orientation);
+    game.playerOnePutsShip(size, [0,2], orientation);
+    game.playerOnePutsShip(size, [0,4], orientation);
+    
+    expect(()=>{game.playerOnePutsShip(size, [0,8], orientation)}).toThrow(Error);
+    expect(()=>{game.playerOnePutsShip(size, [0,8], orientation)}).toThrow("Ship limit exceeded");
+    expect(game.playerOneHasBoatIn([0,8])).toBeFalsy();
+})
+
+test("Player one can have at most 2 length 3 ships", () => {
+    let game = new BattleshipGame();
+    let size = 3;
+    let orientation = 'vertical';
+    game.playerOnePutsShip(size, [0,0], orientation);
+    game.playerOnePutsShip(size, [0,2], orientation);
+    
+    expect(()=>{game.playerOnePutsShip(size, [0,8], orientation)}).toThrow(Error);
+    expect(()=>{game.playerOnePutsShip(size, [0,8], orientation)}).toThrow("Ship limit exceeded");
+    expect(game.playerOneHasBoatIn([0,8])).toBeFalsy();
+})
+
+test("Player one can have at most 1 length 4 ship", () => {
+    let game = new BattleshipGame();
+    let size = 4;
+    let orientation = 'vertical';
+    game.playerOnePutsShip(size, [0,0], orientation);
+    
+    expect(()=>{game.playerOnePutsShip(size, [0,8], orientation)}).toThrow(Error);
+    expect(()=>{game.playerOnePutsShip(size, [0,8], orientation)}).toThrow("Ship limit exceeded");
+    expect(game.playerOneHasBoatIn([0,8])).toBeFalsy();
+})
+
+test("Player one ships cannot touch", () => {
+    let game = new BattleshipGame();
+    let size = 1;
+    let position1 = [0,0], position2 = [0,1];
+    game.playerOnePutsShip(size, position1);
+    
+    expect(()=>{game.playerOnePutsShip(size, position2)}).toThrow(Error);
+    expect(()=>{game.playerOnePutsShip(size, position2)}).toThrow("Ships cannot touch");
+    expect(game.playerOneHasBoatIn(position2)).toBeFalsy();
+})
+
