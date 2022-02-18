@@ -28,6 +28,40 @@ class BattleshipGame {
 
     //----------Interface------------//
 
+    // ---- player actions ---- //
+
+    playerTwoPutsShip(length, position, orientation){
+        this.playerTwo.commandNewShip(length, position, orientation);
+    }
+
+    playerOnePutsShip(length, position, orientation){
+        this.playerOne.commandNewShip(length, position, orientation);
+    }
+
+    playerOneFinishesPutting(){
+        this.playerOne.finishPutting();
+    }
+
+    playerTwoFinishesPutting(){
+        this.playerTwo.finishPutting();
+    }
+
+    playerOneAttacks(aPosition){
+        this.chechCorrectTimeForAttack(this.playerOne);
+        let hit = this.playerTwo.toBeAttackedAt(aPosition);
+        this.turn = this.playerTwo;
+        return hit;
+    }
+
+    playerTwoAttacks(aPosition){
+        this.chechCorrectTimeForAttack(this.playerTwo)
+        let hit = this.playerOne.toBeAttackedAt(aPosition);
+        this.turn = this.playerOne;
+        return hit;
+    }
+
+    // ---- testing ---- //
+
     isPuttingPhase(){
         return this.playerOne.isPutting() || this.playerTwo.isPutting();
     }
@@ -40,33 +74,12 @@ class BattleshipGame {
         return this.playerOne.hasNoShips() && this.playerTwo.hasNoShips(); 
     }
 
-    playerOneAttacks(aPosition){
-        this.chechCorrectTimeForAttack(this.playerOne);
-        let hit = this.playerTwo.toBeAttackedAt(aPosition);
-        this.turn = this.playerTwo;
-        return hit;
-    }
-
-    playerTwoAttacks(aPosition){
-        this.chechCorrectTimeForAttack(this.playerTwo)
-        this.playerOne.toBeAttackedAt(aPosition);
-        this.turn = this.playerOne;
-    }
-
     playerTwoAttackedAt(aPosition){
         return this.playerTwo.hasBeenAttackedAt(aPosition);
     }
 
     playerOneAttackedAt(aPosition){
         return this.playerOne.hasBeenAttackedAt(aPosition);
-    }
-
-    playerTwoPutsShip(length, position, orientation){
-        this.playerTwo.commandNewShip(length, position, orientation);
-    }
-
-    playerOnePutsShip(length, position, orientation){
-        this.playerOne.commandNewShip(length, position, orientation);
     }
 
     playerOneHasBoatIn(position){
@@ -77,20 +90,32 @@ class BattleshipGame {
         return this.playerTwo.hasShipInPosition(position);
     }
 
-    playerOneFinishesPutting(){
-        this.playerOne.finishPutting();
-    }
-
-    playerTwoFinishesPutting(){
-        this.playerTwo.finishPutting();
-    }
-
     isPlayerOnePuttingShips(){
         return this.playerOne.isPutting();
     }
 
     isPlayerTwoPuttingShips(){
         return this.playerTwo.isPutting();
+    }
+
+    isPlayerOneTurn(){
+        return this.playerOne == this.turn;
+    }
+
+    isPlayerTwoTurn(){
+        return this.playerTwo == this.turn;
+    }
+
+    playerTwoHitAt(aPosition){
+        return this.playerTwo.hitAt(aPosition);
+    }
+
+    playerOneHitAt(aPosition){
+        return this.playerOne.hitAt(aPosition);
+    }
+
+    playerTwoSinkAt(aPosition){
+        return this.playerTwo.sinkAt(aPosition);
     }
 
     //---private methods---//
@@ -102,34 +127,7 @@ class BattleshipGame {
         if (this.turn !== aPlayer){
             throw new Error('Wrong turn');
         }
-    }
-
-    playerPutsShip(aPlayer, length, position, orientation){
-        let aNewShip = new Ship(length, position, orientation);
-        this.checkPlayerShipSuperposition(aPlayer,aNewShip);
-        this.checkPlayerShipLimit(aPlayer, length);
-        aPlayer.putNewShip(aNewShip);
-    }
-
-    // ------ Player Related Private Method ------ //
-
-    checkPlayerShipLimit(aPlayer, length){
-        if (aPlayer.shipLimitExceededForSize(length,5-length)){
-            throw new Error('Ship limit exceeded');
-        }   
-    }
-
-    checkPlayerShipSuperposition(aPlayer, aNewShip){
-        if (aPlayer.shipSuperposesWith(aNewShip)){
-            throw new Error('Position already occupied');
-        }
-        if (aPlayer.shipTouchesWith(aNewShip)){
-            throw new Error('Ships cannot touch');
-        }
-    }
-
-
-   
+    }  
 }
 
 export default BattleshipGame;

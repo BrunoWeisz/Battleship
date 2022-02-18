@@ -7,10 +7,10 @@ test("Players are putting if there are ships remaining", () => {
     let position1 = [0,0];
     game.playerOnePutsShip(size, position1);
     
-    expect(game.isPlayerOnePuttingShips()).toBeTruthy();
-    expect(game.isPlayerTwoPuttingShips()).toBeTruthy();
-    expect(game.isPuttingPhase()).toBeTruthy();
-    expect(game.isAttackingPhase()).toBeFalsy();
+    expect(game.isPlayerOnePuttingShips()).toEqual(true);
+    expect(game.isPlayerTwoPuttingShips()).toEqual(true);
+    expect(game.isPuttingPhase()).toEqual(true);
+    expect(game.isAttackingPhase()).toEqual(false);
 })
 
 test("Player one can stop putting if all ships have been put", () => {
@@ -27,10 +27,10 @@ test("Player one can stop putting if all ships have been put", () => {
     game.playerOnePutsShip(4, [9,0], 'horizontal');
     
     game.playerOneFinishesPutting();
-    expect(game.isPlayerOnePuttingShips()).toBeFalsy();
-    expect(game.isPlayerTwoPuttingShips()).toBeTruthy();
-    expect(game.isPuttingPhase()).toBeTruthy();
-    expect(game.isAttackingPhase()).toBeFalsy();
+    expect(game.isPlayerOnePuttingShips()).toEqual(false);
+    expect(game.isPlayerTwoPuttingShips()).toEqual(true);
+    expect(game.isPuttingPhase()).toEqual(true);
+    expect(game.isAttackingPhase()).toEqual(false);
 })
 
 test("Player two can stop putting if all ships have been put", () => {
@@ -47,10 +47,10 @@ test("Player two can stop putting if all ships have been put", () => {
     game.playerTwoPutsShip(4, [9,0], 'horizontal');
     
     game.playerTwoFinishesPutting();
-    expect(game.isPlayerTwoPuttingShips()).toBeFalsy();
-    expect(game.isPlayerOnePuttingShips()).toBeTruthy();
-    expect(game.isPuttingPhase()).toBeTruthy();
-    expect(game.isAttackingPhase()).toBeFalsy();
+    expect(game.isPlayerTwoPuttingShips()).toEqual(false);
+    expect(game.isPlayerOnePuttingShips()).toEqual(true);
+    expect(game.isPuttingPhase()).toEqual(true);
+    expect(game.isAttackingPhase()).toEqual(false);
 })
 
 
@@ -63,10 +63,10 @@ test("Players cannot stop putting if there are ships remaining", () => {
     expect(()=>{game.playerOneFinishesPutting()}).toThrow(Error);
     expect(()=>{game.playerOneFinishesPutting()}).toThrow('Ships remaining');
 
-    expect(game.isPlayerTwoPuttingShips()).toBeTruthy();
-    expect(game.isPlayerOnePuttingShips()).toBeTruthy();
-    expect(game.isPuttingPhase()).toBeTruthy();
-    expect(game.isAttackingPhase()).toBeFalsy();
+    expect(game.isPlayerTwoPuttingShips()).toEqual(true);
+    expect(game.isPlayerOnePuttingShips()).toEqual(true);
+    expect(game.isPuttingPhase()).toEqual(true);
+    expect(game.isAttackingPhase()).toEqual(false);
 })
 
 let bothPlayersEndPuttingPhase = function(game){
@@ -100,10 +100,10 @@ test("Putting phase ends when both players finished putting", () => {
     let game = new BattleshipGame();
     bothPlayersEndPuttingPhase(game);
 
-    expect(game.isPlayerTwoPuttingShips()).toBeFalsy();
-    expect(game.isPlayerOnePuttingShips()).toBeFalsy();
-    expect(game.isPuttingPhase()).toBeFalsy();
-    expect(game.isAttackingPhase()).toBeTruthy();
+    expect(game.isPlayerTwoPuttingShips()).toEqual(false);
+    expect(game.isPlayerOnePuttingShips()).toEqual(false);
+    expect(game.isPuttingPhase()).toEqual(false);
+    expect(game.isAttackingPhase()).toEqual(true);
 })
 
 test("Player one can attack in attacking phase", () => {
@@ -113,8 +113,8 @@ test("Player one can attack in attacking phase", () => {
     let notAPositionToAttack = [0,1];
 
     game.playerOneAttacks(aPositionToAttack);
-    expect(game.playerTwoAttackedAt(aPositionToAttack)).toBeTruthy();
-    expect(game.playerTwoAttackedAt(notAPositionToAttack)).toBeFalsy();
+    expect(game.playerTwoAttackedAt(aPositionToAttack)).toEqual(true);
+    expect(game.playerTwoAttackedAt(notAPositionToAttack)).toEqual(false);
 })
 
 test("Player one cannot attack in putting phase", () => {
@@ -124,7 +124,7 @@ test("Player one cannot attack in putting phase", () => {
     expect(()=>{game.playerOneAttacks(aPositionToAttack)}).toThrow(Error);
     expect(()=>{game.playerOneAttacks(aPositionToAttack)}).toThrow("Is putting phase");
 
-    expect(game.playerTwoAttackedAt(aPositionToAttack)).toBeFalsy();
+    expect(game.playerTwoAttackedAt(aPositionToAttack)).toEqual(false);
 })
 
 test("Player two can attack in attacking phase", () => {
@@ -135,8 +135,8 @@ test("Player two can attack in attacking phase", () => {
 
     game.playerOneAttacks(aPositionToAttack);
     game.playerTwoAttacks(aPositionToAttack);
-    expect(game.playerOneAttackedAt(aPositionToAttack)).toBeTruthy();
-    expect(game.playerOneAttackedAt(notAPositionToAttack)).toBeFalsy();
+    expect(game.playerOneAttackedAt(aPositionToAttack)).toEqual(true);
+    expect(game.playerOneAttackedAt(notAPositionToAttack)).toEqual(false);
 })
 
 test("Player two cannot attack in putting phase", () => {
@@ -146,7 +146,7 @@ test("Player two cannot attack in putting phase", () => {
     expect(()=>{game.playerTwoAttacks(aPositionToAttack)}).toThrow(Error);
     expect(()=>{game.playerTwoAttacks(aPositionToAttack)}).toThrow("Is putting phase");
 
-    expect(game.playerOneAttackedAt(aPositionToAttack)).toBeFalsy();
+    expect(game.playerOneAttackedAt(aPositionToAttack)).toEqual(false);
 })
 
 test("Players cannot attack in invalid positions", () => {
@@ -186,7 +186,9 @@ test("Player two cannot attack outside its turn", () => {
 
     expect(()=>{game.playerTwoAttacks(aPositionToAttack)}).toThrow(Error);
     expect(()=>{game.playerTwoAttacks(aPositionToAttack)}).toThrow("Wrong turn");
-    expect(game.playerOneAttackedAt(aPositionToAttack)).toBeFalsy();
+    expect(game.playerOneAttackedAt(aPositionToAttack)).toEqual(false);
+    expect(game.isPlayerOneTurn()).toEqual(true);
+    expect(game.isPlayerTwoTurn()).toEqual(false);
 })
 
 test("Player one cannot attack outside its turn", () => {
@@ -199,17 +201,62 @@ test("Player one cannot attack outside its turn", () => {
 
     expect(()=>{game.playerOneAttacks(anotherPositionToAttack)}).toThrow(Error);
     expect(()=>{game.playerOneAttacks(anotherPositionToAttack)}).toThrow("Wrong turn");
-    expect(game.playerTwoAttackedAt(anotherPositionToAttack)).toBeFalsy();
+    expect(game.playerTwoAttackedAt(anotherPositionToAttack)).toEqual(false);
+    expect(game.isPlayerOneTurn()).toEqual(false);
+    expect(game.isPlayerTwoTurn()).toEqual(true);
 })
 
-test.skip("Player 2 notices when player 1 hits ship", ()=>{
+test("Player 2 notices when player 1 hits ship", ()=>{
     let game = new BattleshipGame();
     bothPlayersEndPuttingPhase(game);
-    let aPositionToAttack = [1,1];
+    let aPositionToAttack = [0,0];
 
     let hit = game.playerOneAttacks(aPositionToAttack);
 
-    expect(hit).toBeTruthy();
-    expect(game.playerTwoHitAt(aPositionToAttack)).toBeTruthy();
+    expect(hit).toEqual(true);
+    expect(game.playerTwoHitAt(aPositionToAttack)).toEqual(true);
+})
 
+test("Player 2 notices when player 1 doesnt hit ship", ()=>{
+    let game = new BattleshipGame();
+    bothPlayersEndPuttingPhase(game);
+    let aPositionToAttack = [1,0];
+
+    let hit = game.playerOneAttacks(aPositionToAttack);
+
+    expect(hit).toEqual(false);
+    expect(game.playerTwoHitAt(aPositionToAttack)).toEqual(false);
+})
+
+test("Player 1 notices when player 2 hits ship", ()=>{
+    let game = new BattleshipGame();
+    bothPlayersEndPuttingPhase(game);
+    let aPositionToAttack = [0,0];
+
+    game.playerOneAttacks(aPositionToAttack);
+    let hit = game.playerTwoAttacks(aPositionToAttack);
+
+    expect(hit).toEqual(true);
+    expect(game.playerOneHitAt(aPositionToAttack)).toEqual(true);
+})
+
+test("Player 1 notices when player 2 doesnt hit ship", ()=>{
+    let game = new BattleshipGame();
+    bothPlayersEndPuttingPhase(game);
+    let aPositionToAttack = [1,0];
+
+    game.playerOneAttacks(aPositionToAttack);
+    let hit = game.playerTwoAttacks(aPositionToAttack);
+
+    expect(hit).toEqual(false);
+    expect(game.playerOneHitAt(aPositionToAttack)).toEqual(false);
+})
+
+test("Player one can sink player 2 ships of size 1", () => {
+    let game = new BattleshipGame();
+    bothPlayersEndPuttingPhase(game);
+    let aPositionToAttack = [0,0];
+    game.playerOneAttacks(aPositionToAttack);
+
+    expect(game.playerTwoSinkAt(aPositionToAttack)).toEqual(true);
 })

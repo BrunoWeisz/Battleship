@@ -25,6 +25,12 @@ class Ship{
         this.checkBounds();
     }
 
+    // ---- testing ---- //
+    isSink(){
+        return true;
+    }
+
+
     //--------Bound Check------------------------------------//
     checkBounds(){
         this.squares.forEach(square => {

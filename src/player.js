@@ -1,83 +1,53 @@
+import Ship from './ship.js';
+import Board from './board.js';
+
 class BattleshipPlayer{
     constructor(aNumber, aBattleshipGame){
-        // ---- player ---- //
         this.playerNumber = aNumber;
         this.game = aBattleshipGame;
         this.putting = true;
-
-        // ---- board ---- //
-        this.ships = [];
-        this.attackedPositions = [];
+        this.board = new Board();
     }
 
     // ---- Actions / board ---- //
 
     toBeAttackedAt(aPosition){
-        if(!(aPosition[0] >= 0 && aPosition[0] < 10 && 
-            aPosition[1] >= 0 && aPosition[1] < 10)){
-           throw new Error('Attack position must be between bounds');
-        }
-        if(this.attackedPositions.some((attackedPosition) => {
-            return attackedPosition[0] == aPosition[0] &&
-                   attackedPosition[1] == aPosition[1]; 
-        })){
-            throw new Error('Cannot attack same position twice');
-        }
-        this.attackedPositions.push(aPosition);
-        
+        return this.board.toBeAttackedAt(aPosition);
     }
 
-    putNewShip(aShip){
-        this.ships.push(aShip);
+    commandNewShip(length, position, orientation){
+        this.board.commandNewShip(length, position, orientation);
     }
 
     // ---- actions / player ---- //
 
     finishPutting(){
-        if (this.ships.length < 10){
+        if (this.board.areShipsRemaining()){
             throw new Error('Ships remaining');
         }
         this.putting = false;
     }
 
-    commandNewShip(length, position, orientation){
-        this.game.playerPutsShip(this, length, position, orientation);
-    }
-
     // ---- testing / board ---- //
 
     hasBeenAttackedAt(aPosition){
-        return this.attackedPositions.some(pos => {
-            return (pos[0] == aPosition[0] && pos[1] == aPosition[1]); 
-        })
+        return this.board.hasBeenAttackedAt(aPosition);
     }
 
     hasShipInPosition(position){
-        return this.ships.some(aShip => {
-            return aShip.hasPosition(position);
-        })
-    }
-
-    shipTouchesWith(aShip){
-        return this.ships.some(anotherShip => {
-            return anotherShip.touchesWith(aShip);
-        })
-    }
-
-    shipSuperposesWith(aShip){
-        return this.ships.some(anotherShip => {
-            return anotherShip.superposesWith(aShip);
-        })
+        return this.board.hasShipInPosition(position);
     }
 
     hasNoShips(){
-        return this.ships.length == 0;
+        return this.board.hasNoShips();
     }
 
-    shipLimitExceededForSize(shipLength, maxAllowedAmount){
-        return (this.ships.filter(aShip => {
-            return aShip.size() == shipLength;
-        }).length) == maxAllowedAmount  
+    hitAt(aPosition){
+        return this.board.hitAt(aPosition);
+    }
+
+    sinkAt(aPosition){
+        return this.board.sinkAt(aPosition);
     }
 
     // ---- testing / player ---- //
