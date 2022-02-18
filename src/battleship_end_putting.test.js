@@ -202,3 +202,14 @@ test("Player one cannot attack outside its turn", () => {
     expect(game.playerTwoAttackedAt(anotherPositionToAttack)).toBeFalsy();
 })
 
+test.skip("Player 2 notices when player 1 hits ship", ()=>{
+    let game = new BattleshipGame();
+    bothPlayersEndPuttingPhase(game);
+    let aPositionToAttack = [1,1];
+
+    let hit = game.playerOneAttacks(aPositionToAttack);
+
+    expect(hit).toBeTruthy();
+    expect(game.playerTwoHitAt(aPositionToAttack)).toBeTruthy();
+
+})

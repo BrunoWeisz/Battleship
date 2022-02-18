@@ -37,27 +37,18 @@ class BattleshipGame {
     }
 
     isEmpty(){
-        return this.playerOne.getShips().length + this.playerTwo.getShips().length == 0;
+        return this.playerOne.hasNoShips() && this.playerTwo.hasNoShips(); 
     }
 
     playerOneAttacks(aPosition){
-        if (this.isPuttingPhase()){
-            throw new Error('Is putting phase');
-        }
-        if (this.turn !== this.playerOne){
-            throw new Error('Wrong turn');
-        }
-        this.playerTwo.toBeAttackedAt(aPosition);
+        this.chechCorrectTimeForAttack(this.playerOne);
+        let hit = this.playerTwo.toBeAttackedAt(aPosition);
         this.turn = this.playerTwo;
+        return hit;
     }
 
     playerTwoAttacks(aPosition){
-        if (this.isPuttingPhase()){
-            throw new Error('Is putting phase');
-        }
-        if (this.turn !== this.playerTwo){
-            throw new Error('Wrong turn');
-        }
+        this.chechCorrectTimeForAttack(this.playerTwo)
         this.playerOne.toBeAttackedAt(aPosition);
         this.turn = this.playerOne;
     }
@@ -104,6 +95,15 @@ class BattleshipGame {
 
     //---private methods---//
 
+    chechCorrectTimeForAttack(aPlayer){
+        if (this.isPuttingPhase()){
+            throw new Error('Is putting phase');
+        }
+        if (this.turn !== aPlayer){
+            throw new Error('Wrong turn');
+        }
+    }
+
     playerPutsShip(aPlayer, length, position, orientation){
         let aNewShip = new Ship(length, position, orientation);
         this.checkPlayerShipSuperposition(aPlayer,aNewShip);
@@ -111,44 +111,25 @@ class BattleshipGame {
         aPlayer.putNewShip(aNewShip);
     }
 
+    // ------ Player Related Private Method ------ //
+
     checkPlayerShipLimit(aPlayer, length){
-        if (this.playerShipLimitExceededForSize(aPlayer,length,5-length)){
+        if (aPlayer.shipLimitExceededForSize(length,5-length)){
             throw new Error('Ship limit exceeded');
         }   
     }
 
     checkPlayerShipSuperposition(aPlayer, aNewShip){
-        if (this.playerShipsSuperposeWith(aPlayer, aNewShip)){
+        if (aPlayer.shipSuperposesWith(aNewShip)){
             throw new Error('Position already occupied');
         }
-        if (this.playerShipsTouchWith(aPlayer,aNewShip)){
+        if (aPlayer.shipTouchesWith(aNewShip)){
             throw new Error('Ships cannot touch');
         }
     }
 
-    playerShipLimitExceededForSize(aPlayer, shipLength, maxAllowedAmount){
-        return (aPlayer.getShips().filter(aShip => {
-            return aShip.size() == shipLength;
-        }).length) == maxAllowedAmount     
-    }
 
-    playerHasShipInPosition(aPlayer, position){
-        return aPlayer.getShips().some(aShip => {
-            return aShip.hasPosition(position);
-        })
-    }
-
-    playerShipsSuperposeWith(aPlayer, aShip){
-        return aPlayer.getShips().some(anotherShip => {
-            return anotherShip.superposesWith(aShip);
-        })
-    }
-
-    playerShipsTouchWith(aPlayer, aShip){
-        return aPlayer.getShips().some(anotherShip => {
-            return anotherShip.touchesWith(aShip);
-        })  
-    }  
+   
 }
 
 export default BattleshipGame;
