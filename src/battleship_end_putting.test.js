@@ -260,3 +260,40 @@ test("Player one can sink player 2 ships of size 1", () => {
 
     expect(game.playerTwoSinkAt(aPositionToAttack)).toEqual(true);
 })
+
+test("Player one can hit player 2 ships of size >1 without sinking", () => {
+    let game = new BattleshipGame();
+    bothPlayersEndPuttingPhase(game);
+    let aPositionToAttack = [2,0];
+    game.playerOneAttacks(aPositionToAttack);
+
+    expect(game.playerTwoHitAt(aPositionToAttack)).toEqual(true);
+    expect(game.playerTwoSinkAt(aPositionToAttack)).toEqual(false);
+})
+
+test("Player one can sink ships >1", () => {
+    let game = new BattleshipGame();
+    bothPlayersEndPuttingPhase(game);
+    let aPositionToAttack = [2,0];
+    let position2 = [3,0];
+    game.playerOneAttacks(aPositionToAttack);
+    game.playerTwoAttacks(aPositionToAttack);
+    game.playerOneAttacks(position2);
+
+    expect(game.playerTwoHitAt(aPositionToAttack)).toEqual(true);
+    expect(game.playerTwoHitAt(position2)).toEqual(true);
+    expect(game.playerTwoSinkAt(aPositionToAttack)).toEqual(true);
+    expect(game.playerTwoSinkAt(position2)).toEqual(true);
+})
+
+test("Player two can sink player one ships", () => {
+    let game = new BattleshipGame();
+    bothPlayersEndPuttingPhase(game);
+    let aPositionToAttack = [0,0];
+    game.playerOneAttacks(aPositionToAttack);
+    game.playerTwoAttacks(aPositionToAttack);
+
+    expect(game.playerOneSinkAt(aPositionToAttack)).toEqual(true);
+})
+
+export {bothPlayersEndPuttingPhase};

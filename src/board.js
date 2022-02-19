@@ -11,6 +11,10 @@ class Board {
     toBeAttackedAt(aPosition){
         this.assertPositionCanBeAttacked(aPosition);
         this.attackedPositions.push(aPosition);
+        if (this.hasShipInPosition(aPosition)){
+            this.shipAtPosition(aPosition).toBeAttackedAt(aPosition);
+        }
+
         return this.hasShipInPosition(aPosition);
     }
 
@@ -27,11 +31,15 @@ class Board {
 
     // ---- testing ---- //
 
-    
+    allShipsSink(){
+        return this.ships.every(ship=>{
+            return ship.isSink();
+        })
+    }
 
     hitAt(aPosition){
         return this.hasShipInPosition(aPosition) &&
-               this.positionAlreadyAttacked(aPosition);
+               this.shipAtPosition(aPosition).hitAt(aPosition);
     }
 
     sinkAt(aPosition){

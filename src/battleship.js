@@ -1,21 +1,4 @@
-/*Requirements of the game:
-
-Ships{
-    -length
-    -where have been hit
-    -have been sunk
-    -hit(n)
-    -isSunk()
-}
-
-Gameboard{
-    -Place ships at coordinates
-    -receiveAttack() -> sends 'hit()' to a ship
-    -remember attack positions 
-}*/
-
 import _ from 'lodash';
-import Ship from './ship.js';
 import BattleshipPlayer from './player.js';
 
 class BattleshipGame {
@@ -62,12 +45,25 @@ class BattleshipGame {
 
     // ---- testing ---- //
 
+    isGameOver(){
+        return true;
+    }
+
     isPuttingPhase(){
         return this.playerOne.isPutting() || this.playerTwo.isPutting();
     }
 
     isAttackingPhase(){
-        return !(this.isPuttingPhase());
+        // return !(this.isPuttingPhase());
+        return (!this.gameEnded()) && (!this.isPuttingPhase());
+    }
+
+    isPlayerOneWinner(){
+        return this.playerTwo.lost();
+    }
+
+    isPlayerTwoWinner(){
+        return this.playerOne.lost();
     }
 
     isEmpty(){
@@ -114,11 +110,19 @@ class BattleshipGame {
         return this.playerOne.hitAt(aPosition);
     }
 
+    playerOneSinkAt(aPosition){
+        return this.playerOne.sinkAt(aPosition);
+    }
+
     playerTwoSinkAt(aPosition){
         return this.playerTwo.sinkAt(aPosition);
     }
 
     //---private methods---//
+
+    gameEnded(){
+        return this.playerOne.lost() || this.playerTwo.lost();
+    }
 
     chechCorrectTimeForAttack(aPlayer){
         if (this.isPuttingPhase()){

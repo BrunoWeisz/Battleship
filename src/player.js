@@ -1,4 +1,3 @@
-import Ship from './ship.js';
 import Board from './board.js';
 
 class BattleshipPlayer{
@@ -29,6 +28,10 @@ class BattleshipPlayer{
     }
 
     // ---- testing / board ---- //
+
+    lost(){
+        return this.board.allShipsSink();
+    }
 
     hasBeenAttackedAt(aPosition){
         return this.board.hasBeenAttackedAt(aPosition);

@@ -6,6 +6,7 @@ class Ship{
         this.typeCheckLength(length);
         this.typeCheckPosition(position);
         
+        this.hitSquares = [];
         this.squares = [];
         this.length = length;
         this.orientation = orientation;
@@ -25,9 +26,21 @@ class Ship{
         this.checkBounds();
     }
 
+    // ---- actions ---- //
+
+    toBeAttackedAt(aPosition){
+        this.hitSquares.push(aPosition);
+    }
+
+    hitAt(aPosition){
+        return this.hitSquares.some(pos => {
+            return pos[0] == aPosition[0] && pos[1] == aPosition[1];
+        })
+    }
+
     // ---- testing ---- //
     isSink(){
-        return true;
+        return this.squares.length == this.hitSquares.length;
     }
 
 
@@ -89,7 +102,7 @@ class Ship{
         }
         
     }
-    //-------------------------------------------------------//
+    //----------------------- private --------------------------//
 
 }
 
