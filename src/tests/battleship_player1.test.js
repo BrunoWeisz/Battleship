@@ -1,4 +1,4 @@
-import BattleshipGame from './battleship.js';
+import BattleshipGame from '../model/battleship.js';
 
 test("New game should have no boats", () => {
     let game = new BattleshipGame();

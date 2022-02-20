@@ -1,4 +1,4 @@
-import BattleshipGame from './battleship.js';
+import BattleshipGame from '../model/battleship.js';
 
 
 test("Players are putting if there are ships remaining", () => {

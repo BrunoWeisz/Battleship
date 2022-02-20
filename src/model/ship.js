@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 class Ship{
     constructor(length, position, orientation = "vertical"){
         
@@ -90,17 +88,16 @@ class Ship{
 
     //--------Type Checks------------------------------------//
     typeCheckLength(length){
-        if(!_.isInteger(length)) {throw new Error("Ship length must be integer")}
+        if(!Number.isInteger(length)) {throw new Error("Ship length must be integer")}
         if(length > 4){throw new Error("Ship length must be 4 or less")}
     }
     typeCheckPosition(position){
-        if(!(_.isArray(position) && position.length == 2)){
+        if(!(Array.isArray(position) && position.length == 2)){
             throw new Error('Ship position must be a length 2 array');
         }
-        if(!(_.isInteger(position[0]) && _.isInteger(position[1]))){
+        if(!(Number.isInteger(position[0]) && Number.isInteger(position[1]))){
             throw new Error('Ship position must be integer');
-        }
-        
+        }   
     }
     //----------------------- private --------------------------//
 

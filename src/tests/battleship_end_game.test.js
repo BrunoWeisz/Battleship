@@ -1,4 +1,4 @@
-import BattleshipGame from './battleship.js';
+import BattleshipGame from '../model/battleship.js';
 import {bothPlayersEndPuttingPhase} from './battleship_end_putting.test';
 
 let almostAllShipsSinked = function(game){

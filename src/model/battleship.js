@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import BattleshipPlayer from './player.js';
 
 class BattleshipGame {

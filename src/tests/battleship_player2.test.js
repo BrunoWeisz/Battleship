@@ -1,4 +1,4 @@
-import BattleshipGame from './battleship.js';
+import BattleshipGame from '../model/battleship.js';
 
 test("Player Two can put a boat of size 1 in valid position", () => {
     let game = new BattleshipGame();
