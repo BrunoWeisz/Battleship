@@ -7,6 +7,6 @@ import BattleshipGame from "./model/battleship.js";
 // const BattleshipGame = require('./model/battleship.js');
 
 let game = new BattleshipGame();
-let view = new View()
+let view = new View(game);
 let controller = new Controller(game, view);
-controller.setUpStartButton();
+controller.startListening();

@@ -50,6 +50,7 @@ class BattleshipGame {
 
     isPuttingPhase(){
         return this.playerOne.isPutting() || this.playerTwo.isPutting();
+        // return this.isPlayerOnePuttingShips() || this.isPlayerTwoPuttingShips.
     }
 
     isAttackingPhase(){

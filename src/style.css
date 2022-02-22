@@ -1,3 +1,7 @@
+*{
+    box-sizing:  border-box;
+}
+
 html, body{
     margin: 0;
     border:0;
@@ -6,16 +10,108 @@ html, body{
     height:100%;
 }
 
+
 body{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 50px;
 
     background-image: url('../resources/background.jpg');
 }
 
-.button-holder{
+.controlls{
+    width: 800px;
+    height: 50px;
+    display: flex;
+    justify-content: space-around;
+
+    background-color: rgba(161, 153, 142, 0.39);
+}
+
+.controlls ul{
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    height: 30px;
+}
+
+.controlls ul li{
+    background-color: white;
+    padding: 5px;
+
+    cursor: pointer;
+}
+
+.board-container{
+    height: 800px;
+    width: 800px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 0.2fr 0.2fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 30px;
+
+    background-color: rgba(47, 64, 85, 0.466);
+}
+
+
+.board-container .board{
+    height: 100%;
+    width: 100%;
+    background-color: rgba(245, 222, 179, 0.685);
+}
+
+.board-container .board .table{
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+}
+
+.board-container .board .table .empty{
+    border: 1px solid black;
+}
+
+.board-container .board .table div:hover{
+    background-color: burlywood;
+}
+
+.player-1-ready,
+.player-2-ready,
+.random-disposition-1,
+.random-disposition-2{
+    height: 20%;
+    align-self: center;
+    justify-self: center;
+}
+
+.waiting-message{
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* .button-holder{
     width: clamp(400px, 50%, 800px);
     height: 250px;
     display: flex;
@@ -39,4 +135,4 @@ body{
 
 .start-button:focus{
     outline: none;
-}
+} */
