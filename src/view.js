@@ -7,10 +7,6 @@ class View{
     }
 
     createBoards(){
-        
-        const playerOneEnemyGrid = document.querySelector(".board-container .player-1-enemy table");
-        const playerTwoEnemyGrid = document.querySelector(".board-container .player-2-enemy table");
-
         this.createPlayersSelfTable();
     }
 
@@ -19,17 +15,34 @@ class View{
         this.createPlayerSelfTable(2);
     }
 
-    createPlayerSelfTable(n){
-        const playerSelfGrid = document.querySelector(`.board-container .player-${n}-self .table`);
+    createPlayersEnemyTable(){
+        this.createPlayerEnemyTable(1);
+        this.createPlayerEnemyTable(2);
+    }
+
+    createTable(n, which){
+        console.log(`creating ${which} table for player ${n}`);
+        const playerGrid = document.querySelector(`.board-container .player-${n}-${which} .table`);
         for(let i = 0; i < 10; i++){
             for(let j = 0; j < 10; j++){
                 let newSquare = document.createElement('div');
                 newSquare.classList.add('empty');
                 newSquare.style.cssText = `--x: ${i}; --y: ${j}`;
                             
-                playerSelfGrid.appendChild(newSquare);
+                playerGrid.appendChild(newSquare);
             }
         }
+    }
+
+    createPlayerEnemyTable(n){
+        document.querySelector(`.board-container .player-${n}-enemy`).classList.add('board');
+        let message = document.querySelector('.waiting-message');
+        if (message) message.parentNode.removeChild(message);
+        this.createTable(n, 'enemy');
+    }
+
+    createPlayerSelfTable(n){
+        this.createTable(n, 'self');
     }
 
     updatePlayerSelf(n){
@@ -67,27 +80,17 @@ class View{
 
     playerFinishesPutting(n){
         // Show a 'waiting' sign if corresponds, block the self board for player n
-        let waiting;
-        if (n == 1){
-            if(this.game.isPlayerOnePuttingShips()) return;
-            waiting = this.game.isPlayerTwoPuttingShips();
-        } else {
-            if(this.game.isPlayerTwoPuttingShips()) return;
-            waiting = this.game.isPlayerOnePuttingShips();
-        }
 
-        if (waiting){
-            this.putWaitingSign(n);
-        }
+        this.putWaitingSign(n);        
+    }
+
+    startAttackingPhase(){
+        this.createPlayersEnemyTable();
     }
 
     putWaitingSign(n){
 
-        const playerEnemyGrid = document.querySelector(`.board-container .player-${n}-enemy .table`);
-        
-
-        let messageContainer = document.createElement('div');
-        messageContainer.classList.add('waiting-message-container');
+        const playerEnemyGrid = document.querySelector(`.board-container .player-${n}-enemy`);
 
         let message = document.createElement('h2');
         message.textContent = "Waiting for opponent";

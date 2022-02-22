@@ -74,11 +74,20 @@ class Controller {
         readyButton.addEventListener('click', (ev) => {
             if (n == 1){
                 this.game.playerOneFinishesPutting();
-                this.view.playerOneFinishesPutting();
+                if (this.game.isAttackingPhase()){
+                    this.startAttacingPhase();
+                } else if (!this.game.isPlayerOnePuttingShips()){
+                    this.view.playerOneFinishesPutting();
+                }
             } else {
                 this.game.playerTwoFinishesPutting();
-                this.view.playerTwoFinishesPutting();
-            }    
+                if (this.game.isAttackingPhase()){
+                    this.startAttacingPhase();
+                } else if(!this.game.isPlayerTwoPuttingShips()) {
+                    this.view.playerTwoFinishesPutting();
+                }
+            }
+
         })   
         
         let randomButton = document.querySelector(`.board-container .random-disposition-${n}`);
@@ -109,8 +118,12 @@ class Controller {
         func.call(this.game, 3,[5,0], 'vertical');
         func.call(this.game, 3,[5,2], 'vertical');
         func.call(this.game, 4,[9,0], 'horizontal');
-        
+
         this.view.updatePlayerSelf(n);
+    }
+
+    startAttacingPhase(){
+        this.view.startAttackingPhase();
     }
 
 
